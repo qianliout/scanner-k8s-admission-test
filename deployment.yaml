@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scanner-k8s-deployment
+  labels:
+    app: scanner-k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scanner-k8s
+  template:
+    metadata:
+      labels:
+        app: scanner-k8s
+    spec:
+      containers:
+      - name: scanner-k8s
+        image: registry.t-appagile.com/cicd-test/k8s-deploy:test
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 6100
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scanner-test-service
+spec:
+  selector:
+    app: scanner-k8s
+  ports:
+    - name: http
+      protocol: TCP
+      port: 6100
+      targetPort: 6100
